@@ -1,8 +1,9 @@
+
 <?php
 
 class ImgOptimizer 
 {
-	public $adresar;
+	public $adresar, $origImgFolder;
 	public $vstupniSoubor;
 	public $vystupniSoubor;
 	public $maxVelikost;
@@ -176,12 +177,21 @@ class ImgOptimizer
     	return $i;
 	}
 
-	public function ulozOptImg(){
-		echo $this->vystupniSoubor;
-		$fp = fopen ($this->vystupniSoubor,'w');
+    function saveFile($fileName, $string) {
+        $fp = fopen($fileName, 'w');
+        fwrite($fp, string);
+        fclose($fp);
 
-    	fwrite ($fp, $this->optimizuj());
-    	fclose ($fp);
+    }
+	public function ulozOptImg(){
+        //$vystupniSoubor=
+        echo $this->vystupniSoubor;
+        $this->saveFile($this->vystupniSoubor,$this->optimizuj);
+
+	//	$fp = fopen ($this->vystupniSoubor,'w');
+    //
+    //	fwrite ($fp, $this->optimizuj());
+    //	fclose ($fp);
 	}
     public function ulozWebp(){
         // Create a blank image and add some text
@@ -198,7 +208,14 @@ class ImgOptimizer
         //imagedestroy($im);
     }
 
-
+public function ulozOrigImg()
+       	{
+		$pripona=zjistiPriponu();
+        $content= file_get_contents($this->vstupniSoubor);
+        $this->saveFile($this->origImgFolder.'/'.$this->vystupniSoubor,$content);
+        echo '<br> originál byl uložen <br>';
+		
+	}
 	public function optimizujAdresar($inputFolder, $outputFolder){
 
 	}
