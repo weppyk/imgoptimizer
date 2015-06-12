@@ -3,7 +3,7 @@
 
 class ImgOptimizer 
 {
-	public $adresar, $origImgFolder;
+	public $adresar, $origImgFolder, $optImgFolder;
 	public $vstupniSoubor;
 	public $vystupniSoubor;
 	public $maxVelikost;
@@ -111,23 +111,24 @@ class ImgOptimizer
 
 	public function optimizuj()
 	{
+        $inFile= $this->origImgFolder.'/'.$this->vstupniSoubor;
 		$delsiStrana='0';
-		list($width,$height,$pripona) = getimagesize($this->vstupniSoubor);
+		list($width,$height,$pripona) = getimagesize($inFile);
         
 		echo $width;echo $height;
 //Nacte obrazek podle typu souboru
 		
 		switch ($pripona) {
 			case '2': //.jpeg
-				$img = imagecreatefromjpeg($this->vstupniSoubor); echo 'Pripona je jpeg';
+				$img = imagecreatefromjpeg($inFile); echo 'Pripona je jpeg';
 				break;
 			case '3': //.png
-				$img = imagecreatefromPng($this->vstupniSoubor); echo 'Pripona je png';
-                echo $this->vstupniSoubor;
+				$img = imagecreatefromPng($inFile); echo 'Pripona je png';
+                echo $inFile;
 
 				break;
 			case '6': //.bmp
-				$img = $this->imageCreateFromBmp($this->vstupniSoubor); echo 'Pripona je bmp';
+				$img = $this->imageCreateFromBmp($inFile); echo 'Pripona je bmp';
 
 				break;
 			default:
@@ -177,18 +178,17 @@ class ImgOptimizer
     	return $i;
 	}
 
-    function saveFile($fileName, $string) {
-        $fp = fopen($fileName, 'w');
-        fwrite($fp, string);
-        fclose($fp);
-
-    }
+//    function saveFile($fileName, $obrazek) {
+//        $fp = fopen($fileName, 'w');
+//        fwrite($fp, $obrazek);
+//        fclose($fp);
+//    }
 	public function ulozOptImg(){
-        //$vystupniSoubor=
-        echo $this->vystupniSoubor;
-        $this->saveFile($this->vystupniSoubor,$this->optimizuj);
-
-	//	$fp = fopen ($this->vystupniSoubor,'w');
+        $outFile=$this->optImgFolder.'/'.$this->vystupniSoubor;
+        echo '<br>'.$outFile.'<br>';
+    //    $this->saveFile($outFile, $this->optimizuj());
+        file_put_contents($outFile, $this->optimizuj());
+	//	$fp = fopen ($outFile,'w');
     //
     //	fwrite ($fp, $this->optimizuj());
     //	fclose ($fp);
@@ -208,11 +208,13 @@ class ImgOptimizer
         //imagedestroy($im);
     }
 
-public function ulozOrigImg()
+public function ulozOrigImg($imgUrl)
        	{
-		$pripona=zjistiPriponu();
-        $content= file_get_contents($this->vstupniSoubor);
-        $this->saveFile($this->origImgFolder.'/'.$this->vystupniSoubor,$content);
+        echo "Originál se teď pokusí uložit<br>";
+	//	$pripona=zjistiPriponu();
+        $content= file_get_contents($imgUrl);
+    //    $this->saveFile($this->origImgFolder.'/'.$this->vystupniSoubor,$content);
+        file_put_contents($this->origImgFolder.'/'.$this->vystupniSoubor, $content);
         echo '<br> originál byl uložen <br>';
 		
 	}
